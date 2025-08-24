@@ -1,0 +1,17 @@
+{
+  "app": "python3 app.py",
+  "watch": {
+    "include": [
+      "infrastructure/**/*.py",
+      "lambda-functions/**/*.py"
+    ]
+  },
+  "context": {
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/core:target-partitions": [
+      "aws",
+      "aws-cn"
+    ]
+  }
+} 

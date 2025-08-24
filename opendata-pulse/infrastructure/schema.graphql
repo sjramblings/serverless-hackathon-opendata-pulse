@@ -1,0 +1,83 @@
+"""
+OpenData Pulse GraphQL Schema
+NSW Air Quality Data API
+"""
+
+type AirQualityReading {
+  id: ID!
+  station_id: String!
+  region: String!
+  suburb: String!
+  postcode: String!
+  latitude: Float!
+  longitude: Float!
+  timestamp: AWSDateTime!
+  pm25: Float
+  pm10: Float
+  no2: Float
+  o3: Float
+  co: Float
+  aqi: Float
+  data_quality: String
+}
+
+type Dataset {
+  id: ID!
+  name: String!
+  description: String!
+  source: String!
+  last_updated: AWSDateTime!
+  record_count: Int!
+}
+
+type Query {
+  # Air Quality Queries
+  getAirQualityReading(id: ID!): AirQualityReading
+  listAirQualityReadings(
+    region: String
+    suburb: String
+    startTime: AWSDateTime
+    endTime: AWSDateTime
+    limit: Int
+    nextToken: String
+  ): AirQualityReadingsConnection
+  
+  # Dataset Queries
+  getDataset(id: ID!): Dataset
+  listDatasets: [Dataset!]!
+  
+  # Health Check
+  health: String!
+}
+
+type AirQualityReadingsConnection {
+  items: [AirQualityReading!]!
+  nextToken: String
+}
+
+type Mutation {
+  # Placeholder for future mutations
+  createAirQualityReading(input: CreateAirQualityReadingInput!): AirQualityReading
+}
+
+input CreateAirQualityReadingInput {
+  station_id: String!
+  region: String!
+  suburb: String!
+  postcode: String!
+  latitude: Float!
+  longitude: Float!
+  timestamp: AWSDateTime!
+  pm25: Float
+  pm10: Float
+  no2: Float
+  o3: Float
+  co: Float
+  aqi: Float
+  data_quality: String
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+} 
