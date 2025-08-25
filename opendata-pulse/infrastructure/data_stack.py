@@ -18,12 +18,15 @@ class DataStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
         
-        # S3 Buckets
+        # S3 Buckets with NSW-specific naming
+        bucket_prefix = "opendata-pulse"
+        
         self.raw_bucket = s3.Bucket(
             self, "RawDataBucket",
-            bucket_name=f"{construct_id.lower()}-raw-data",
+            bucket_name=f"{bucket_prefix}-raw-data-{cdk.Aws.ACCOUNT_ID}",
             versioned=True,
             encryption=s3.BucketEncryption.S3_MANAGED,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             lifecycle_rules=[
                 s3.LifecycleRule(
                     id="RawDataLifecycle",
@@ -46,17 +49,19 @@ class DataStack(cdk.Stack):
         
         self.curated_bucket = s3.Bucket(
             self, "CuratedDataBucket",
-            bucket_name=f"{construct_id.lower()}-curated-data",
+            bucket_name=f"{bucket_prefix}-curated-data-{cdk.Aws.ACCOUNT_ID}",
             versioned=True,
             encryption=s3.BucketEncryption.S3_MANAGED,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             removal_policy=RemovalPolicy.RETAIN
         )
         
         self.exports_bucket = s3.Bucket(
             self, "ExportsBucket",
-            bucket_name=f"{construct_id.lower()}-exports",
+            bucket_name=f"{bucket_prefix}-exports-{cdk.Aws.ACCOUNT_ID}",
             versioned=False,
             encryption=s3.BucketEncryption.S3_MANAGED,
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             lifecycle_rules=[
                 s3.LifecycleRule(
                     id="ExportsLifecycle",
@@ -118,4 +123,42 @@ class DataStack(cdk.Stack):
                 ),
                 enforce_work_group_configuration=True
             )
+        )
+        
+        # IAM Role for Glue operations
+        self.glue_role = iam.Role(
+            self, "GlueServiceRole",
+            assumed_by=iam.ServicePrincipal("glue.amazonaws.com"),
+            managed_policies=[
+                iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSGlueServiceRole")
+            ]
+        )
+        
+        # Grant Glue role access to S3 buckets
+        self.raw_bucket.grant_read_write(self.glue_role)
+        self.curated_bucket.grant_read_write(self.glue_role)
+        
+        # Output the bucket names for reference
+        cdk.CfnOutput(
+            self, "RawBucketName",
+            value=self.raw_bucket.bucket_name,
+            description="S3 bucket for raw NSW air quality data"
+        )
+        
+        cdk.CfnOutput(
+            self, "CuratedBucketName", 
+            value=self.curated_bucket.bucket_name,
+            description="S3 bucket for curated/processed data"
+        )
+        
+        cdk.CfnOutput(
+            self, "ExportsBucketName",
+            value=self.exports_bucket.bucket_name,
+            description="S3 bucket for data exports"
+        )
+        
+        cdk.CfnOutput(
+            self, "DynamoDBTableName",
+            value=self.air_quality_table.table_name,
+            description="DynamoDB table for air quality hot aggregates"
         ) 
