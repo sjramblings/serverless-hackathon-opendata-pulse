@@ -10,8 +10,14 @@ from pathlib import Path
 from typing import Dict, List, Optional
 from datetime import datetime
 
-from .cdk_parser import CDKStackParser, InfrastructureComponent
-from .diagram_generator import MermaidDiagramGenerator, DiagramType
+try:
+    from .cdk_parser import CDKStackParser, InfrastructureComponent
+    from .diagram_generator import DiagramGenerator
+    from .infrastructure_analyzer import InfrastructureAnalyzer
+except ImportError:
+    from cdk_parser import CDKStackParser, InfrastructureComponent
+    from diagram_generator import DiagramGenerator
+    from infrastructure_analyzer import InfrastructureAnalyzer
 
 
 class DocumentationGenerator:

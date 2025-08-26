@@ -9,7 +9,7 @@ import ast
 import os
 import re
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Any
+from typing import Dict, List, Optional, Set, Any, Tuple
 from pathlib import Path
 
 
@@ -28,21 +28,53 @@ class InfrastructureComponent:
     stack_name: str = ""
     file_path: str = ""
     line_number: int = 0
+    outputs: List[str] = field(default_factory=list)
+    environment_variables: Dict[str, str] = field(default_factory=dict)
+    permissions: List[str] = field(default_factory=list)
+
+
+@dataclass
+class StackDependency:
+    """Represents a dependency relationship between stacks."""
+    
+    source_stack: str
+    target_stack: str
+    dependency_type: str  # 'explicit', 'resource_reference', 'output_import'
+    description: str = ""
+
+
+@dataclass
+class ServiceRelationship:
+    """Represents a relationship between AWS services."""
+    
+    source_service: str
+    target_service: str
+    relationship_type: str  # 'triggers', 'stores_in', 'reads_from', 'authenticates_with'
+    source_component: str = ""
+    target_component: str = ""
+    description: str = ""
 
 
 class CDKStackParser:
     """Parser for CDK stack files to extract infrastructure components."""
     
-    def __init__(self, infrastructure_path: str = "infrastructure"):
+    def __init__(self, infrastructure_path: str = "infrastructure", app_file: str = "app.py"):
         """Initialize parser with path to CDK infrastructure directory."""
         self.infrastructure_path = Path(infrastructure_path)
+        self.app_file = Path(app_file)
         self.components: List[InfrastructureComponent] = []
-        self.stack_dependencies: Dict[str, List[str]] = {}
+        self.stack_dependencies: List[StackDependency] = []
+        self.service_relationships: List[ServiceRelationship] = []
+        self.stack_outputs: Dict[str, List[str]] = {}
         
-    def parse_all_stacks(self) -> List[InfrastructureComponent]:
-        """Parse all CDK stack files and return infrastructure components."""
+    def parse_all_stacks(self) -> Tuple[List[InfrastructureComponent], List[StackDependency], List[ServiceRelationship]]:
+        """Parse all CDK stack files and return infrastructure components, dependencies, and relationships."""
         if not self.infrastructure_path.exists():
             raise FileNotFoundError(f"Infrastructure directory not found: {self.infrastructure_path}")
+            
+        # Parse the main app.py file first to understand stack dependencies
+        if self.app_file.exists():
+            self._parse_app_file()
             
         stack_files = list(self.infrastructure_path.glob("*_stack.py"))
         
@@ -51,8 +83,11 @@ class CDKStackParser:
                 self._parse_stack_file(stack_file)
             except Exception as e:
                 print(f"Warning: Failed to parse {stack_file}: {e}")
+        
+        # Analyze service relationships after parsing all stacks
+        self._analyze_service_relationships()
                 
-        return self.components
+        return self.components, self.stack_dependencies, self.service_relationships
     
     def _parse_stack_file(self, file_path: Path) -> None:
         """Parse a single CDK stack file."""
@@ -101,6 +136,7 @@ class CDKStackParser:
             'aws_s3': 'S3',
             'aws_dynamodb': 'DynamoDB', 
             'aws_lambda': 'Lambda',
+            '_lambda': 'Lambda',  # Handle underscore prefix
             'aws_apigateway': 'API Gateway',
             'aws_appsync': 'AppSync',
             'aws_cognito': 'Cognito',
@@ -112,12 +148,31 @@ class CDKStackParser:
             'aws_amplify': 'Amplify',
             'aws_cloudfront': 'CloudFront',
             'aws_location': 'Location Service',
-            'aws_iam': 'IAM'
+            'aws_iam': 'IAM',
+            'aws_wafv2': 'WAF',
+            'aws_ec2': 'EC2',
+            'aws_logs': 'CloudWatch Logs'
         }
         
         for cdk_module, service in service_mapping.items():
             if cdk_module in module_name:
                 return service
+        
+        # Try to infer from construct names if module mapping fails
+        if 's3' in module_name.lower():
+            return 'S3'
+        elif 'lambda' in module_name.lower():
+            return 'Lambda'
+        elif 'dynamo' in module_name.lower():
+            return 'DynamoDB'
+        elif 'cognito' in module_name.lower():
+            return 'Cognito'
+        elif 'appsync' in module_name.lower():
+            return 'AppSync'
+        elif 'location' in module_name.lower():
+            return 'Location Service'
+        elif 'amplify' in module_name.lower():
+            return 'Amplify'
                 
         return 'Unknown'
     
@@ -204,6 +259,17 @@ class CDKStackParser:
                         )
                         if component:
                             self.components.append(component)
+            
+            # Look for CloudFormation outputs
+            elif isinstance(node, ast.Call):
+                if (isinstance(node.func, ast.Attribute) and 
+                    node.func.attr == 'CfnOutput'):
+                    self._parse_cfn_output(node, stack_name)
+                
+                # Look for grant permissions
+                elif (isinstance(node.func, ast.Attribute) and 
+                      'grant' in node.func.attr):
+                    self._parse_grant_permission(node, stack_name)
     
     def _parse_resource_call(self, call_node: ast.Call, resource_name: str,
                            stack_name: str, file_path: Path, imports: Dict[str, str],
@@ -219,12 +285,25 @@ class CDKStackParser:
             if isinstance(call_node.func.value, ast.Name):
                 module_alias = call_node.func.value.id
                 aws_service = imports.get(module_alias, "Unknown")
+                
+                # If import mapping failed, try to infer from construct name
+                if aws_service == "Unknown":
+                    aws_service = self._infer_service_from_construct(construct_name)
         elif isinstance(call_node.func, ast.Name):
             construct_name = call_node.func.id
             aws_service = imports.get(construct_name, "Unknown")
+            
+            # If import mapping failed, try to infer from construct name
+            if aws_service == "Unknown":
+                aws_service = self._infer_service_from_construct(construct_name)
         
         # Extract configuration from constructor arguments
         configuration = self._extract_call_arguments(call_node)
+        
+        # Extract environment variables for Lambda functions
+        environment_vars = {}
+        if aws_service == "Lambda" and "environment" in configuration:
+            environment_vars = configuration.get("environment", {})
         
         # Determine resource purpose
         purpose = self._infer_resource_purpose(resource_name, construct_name, aws_service)
@@ -237,10 +316,51 @@ class CDKStackParser:
             cdk_construct=construct_name,
             purpose=purpose,
             configuration=configuration,
+            environment_variables=environment_vars,
             stack_name=stack_name,
             file_path=str(file_path),
             line_number=line_number
         )
+    
+    def _parse_cfn_output(self, call_node: ast.Call, stack_name: str) -> None:
+        """Parse CloudFormation output definitions."""
+        output_name = ""
+        output_description = ""
+        
+        # Extract output name from first argument
+        if call_node.args and isinstance(call_node.args[1], ast.Constant):
+            output_name = call_node.args[1].value
+        
+        # Extract description from keyword arguments
+        for keyword in call_node.keywords:
+            if keyword.arg == "description" and isinstance(keyword.value, ast.Constant):
+                output_description = keyword.value.value
+        
+        if output_name:
+            if stack_name not in self.stack_outputs:
+                self.stack_outputs[stack_name] = []
+            self.stack_outputs[stack_name].append({
+                'name': output_name,
+                'description': output_description
+            })
+    
+    def _parse_grant_permission(self, call_node: ast.Call, stack_name: str) -> None:
+        """Parse grant permission calls to understand resource relationships."""
+        if isinstance(call_node.func, ast.Attribute):
+            permission_type = call_node.func.attr
+            
+            # Find the component this permission is being granted to
+            if (isinstance(call_node.func.value, ast.Attribute) and
+                isinstance(call_node.func.value.value, ast.Name) and
+                call_node.func.value.value.id == 'self'):
+                
+                resource_name = call_node.func.value.attr
+                
+                # Find the component and add permission info
+                for component in self.components:
+                    if component.name == resource_name and component.stack_name == stack_name:
+                        component.permissions.append(permission_type)
+                        break
     
     def _extract_call_arguments(self, call_node: ast.Call) -> Dict[str, Any]:
         """Extract configuration from constructor call arguments."""
@@ -312,3 +432,178 @@ class CDKStackParser:
     def get_components_by_service(self, aws_service: str) -> List[InfrastructureComponent]:
         """Get all components for a specific AWS service."""
         return [comp for comp in self.components if comp.aws_service == aws_service]
+    
+    def _parse_app_file(self) -> None:
+        """Parse the main app.py file to extract stack dependencies."""
+        try:
+            with open(self.app_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            tree = ast.parse(content)
+            
+            # Find stack instantiations and dependencies
+            stack_instances = {}
+            
+            for node in ast.walk(tree):
+                # Find stack instantiations
+                if isinstance(node, ast.Assign):
+                    if (len(node.targets) == 1 and 
+                        isinstance(node.targets[0], ast.Name) and
+                        isinstance(node.value, ast.Call)):
+                        
+                        var_name = node.targets[0].id
+                        if 'stack' in var_name.lower():
+                            stack_instances[var_name] = self._extract_stack_class_name(node.value)
+                
+                # Find add_dependency calls
+                elif isinstance(node, ast.Call):
+                    if (isinstance(node.func, ast.Attribute) and 
+                        node.func.attr == 'add_dependency' and
+                        len(node.args) == 1):
+                        
+                        source_stack = self._get_stack_name_from_var(node.func.value, stack_instances)
+                        target_stack = self._get_stack_name_from_var(node.args[0], stack_instances)
+                        
+                        if source_stack and target_stack:
+                            self.stack_dependencies.append(StackDependency(
+                                source_stack=source_stack,
+                                target_stack=target_stack,
+                                dependency_type="explicit",
+                                description=f"{source_stack} depends on {target_stack}"
+                            ))
+                            
+        except Exception as e:
+            print(f"Warning: Failed to parse app.py: {e}")
+    
+    def _extract_stack_class_name(self, call_node: ast.Call) -> str:
+        """Extract stack class name from constructor call."""
+        if isinstance(call_node.func, ast.Name):
+            return call_node.func.id
+        return "Unknown"
+    
+    def _get_stack_name_from_var(self, node: ast.AST, stack_instances: Dict[str, str]) -> Optional[str]:
+        """Get stack name from variable reference."""
+        if isinstance(node, ast.Name):
+            return stack_instances.get(node.id)
+        return None
+    
+    def _analyze_service_relationships(self) -> None:
+        """Analyze relationships between AWS services based on component configurations."""
+        
+        # Define common service relationship patterns
+        relationship_patterns = [
+            # Lambda triggers and data access
+            {
+                'source_service': 'Lambda',
+                'target_service': 'S3',
+                'relationship_type': 'stores_in',
+                'pattern': lambda comp: 'bucket' in str(comp.configuration).lower()
+            },
+            {
+                'source_service': 'Lambda', 
+                'target_service': 'DynamoDB',
+                'relationship_type': 'stores_in',
+                'pattern': lambda comp: 'table' in str(comp.configuration).lower()
+            },
+            {
+                'source_service': 'EventBridge',
+                'target_service': 'Lambda',
+                'relationship_type': 'triggers',
+                'pattern': lambda comp: comp.cdk_construct == 'Rule'
+            },
+            # API and authentication
+            {
+                'source_service': 'AppSync',
+                'target_service': 'Cognito',
+                'relationship_type': 'authenticates_with',
+                'pattern': lambda comp: 'user_pool' in str(comp.configuration).lower()
+            },
+            # Data flow relationships
+            {
+                'source_service': 'S3',
+                'target_service': 'Glue',
+                'relationship_type': 'processed_by',
+                'pattern': lambda comp: comp.aws_service == 'Glue'
+            },
+            {
+                'source_service': 'S3',
+                'target_service': 'Athena',
+                'relationship_type': 'queried_by',
+                'pattern': lambda comp: comp.aws_service == 'Athena'
+            }
+        ]
+        
+        # Find components that match relationship patterns
+        for pattern in relationship_patterns:
+            source_components = self.get_components_by_service(pattern['source_service'])
+            target_components = self.get_components_by_service(pattern['target_service'])
+            
+            for source_comp in source_components:
+                for target_comp in target_components:
+                    if pattern['pattern'](source_comp) or pattern['pattern'](target_comp):
+                        self.service_relationships.append(ServiceRelationship(
+                            source_service=pattern['source_service'],
+                            target_service=pattern['target_service'],
+                            relationship_type=pattern['relationship_type'],
+                            source_component=source_comp.name,
+                            target_component=target_comp.name,
+                            description=f"{source_comp.name} {pattern['relationship_type']} {target_comp.name}"
+                        ))
+    
+    def get_stack_dependency_map(self) -> Dict[str, List[str]]:
+        """Get stack dependencies as a simple dictionary map."""
+        dependency_map = {}
+        
+        for dep in self.stack_dependencies:
+            if dep.source_stack not in dependency_map:
+                dependency_map[dep.source_stack] = []
+            dependency_map[dep.source_stack].append(dep.target_stack)
+            
+        return dependency_map
+    
+    def get_service_interaction_map(self) -> Dict[str, List[Dict[str, str]]]:
+        """Get service interactions organized by source service."""
+        interaction_map = {}
+        
+        for rel in self.service_relationships:
+            if rel.source_service not in interaction_map:
+                interaction_map[rel.source_service] = []
+            
+            interaction_map[rel.source_service].append({
+                'target_service': rel.target_service,
+                'relationship_type': rel.relationship_type,
+                'description': rel.description
+            })
+            
+        return interaction_map
+    
+    def _infer_service_from_construct(self, construct_name: str) -> str:
+        """Infer AWS service from CDK construct name."""
+        construct_lower = construct_name.lower()
+        
+        construct_service_map = {
+            'bucket': 'S3',
+            'table': 'DynamoDB',
+            'function': 'Lambda',
+            'layerversion': 'Lambda',
+            'rule': 'EventBridge',
+            'queue': 'SQS',
+            'topic': 'SNS',
+            'userpool': 'Cognito',
+            'identitypool': 'Cognito',
+            'graphqlapi': 'AppSync',
+            'cfnapp': 'Amplify',
+            'cfnbranch': 'Amplify',
+            'cfnmap': 'Location Service',
+            'cfnplaceindex': 'Location Service',
+            'cfndatabase': 'Glue',
+            'cfnworkgroup': 'Athena',
+            'role': 'IAM',
+            'cfnwebacl': 'WAF'
+        }
+        
+        for construct_pattern, service in construct_service_map.items():
+            if construct_pattern in construct_lower:
+                return service
+        
+        return 'Unknown'

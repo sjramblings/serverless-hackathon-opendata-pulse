@@ -1,0 +1,3463 @@
+{
+  "overview": {
+    "total_stacks": 5,
+    "total_services": 15,
+    "total_resources": 56,
+    "architecture_pattern": "Serverless Multi-Stack",
+    "primary_region": "ap-southeast-2",
+    "deployment_model": "AWS CDK v2"
+  },
+  "stacks": {
+    "LocationStack": {
+      "purpose": "Geographic and location services",
+      "file_path": "infrastructure/location_stack.py",
+      "resource_count": 4,
+      "services_used": [
+        "Location Service"
+      ],
+      "resources": [
+        {
+          "name": "air_quality_map",
+          "service": "Location Service",
+          "construct": "CfnMap",
+          "purpose": "Location Service resource"
+        },
+        {
+          "name": "place_index",
+          "service": "Location Service",
+          "construct": "CfnPlaceIndex",
+          "purpose": "Location Service resource"
+        },
+        {
+          "name": "air_quality_map",
+          "service": "Location Service",
+          "construct": "CfnMap",
+          "purpose": "Location Service resource"
+        },
+        {
+          "name": "place_index",
+          "service": "Location Service",
+          "construct": "CfnPlaceIndex",
+          "purpose": "Location Service resource"
+        }
+      ],
+      "outputs": []
+    },
+    "ComputeStack": {
+      "purpose": "Compute and processing services",
+      "file_path": "infrastructure/compute_stack.py",
+      "resource_count": 20,
+      "services_used": [
+        "SNS",
+        "Lambda",
+        "SQS",
+        "EventBridge",
+        "IAM"
+      ],
+      "resources": [
+        {
+          "name": "common_layer",
+          "service": "Lambda",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "powertools_layer",
+          "service": "Lambda",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "dlq",
+          "service": "SQS",
+          "construct": "Queue",
+          "purpose": "Message queuing"
+        },
+        {
+          "name": "notification_topic",
+          "service": "SNS",
+          "construct": "Topic",
+          "purpose": "Event notifications"
+        },
+        {
+          "name": "lambda_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "ingest_function",
+          "service": "Lambda",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "etl_function",
+          "service": "Lambda",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "health_check_function",
+          "service": "Lambda",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "ingestion_rule",
+          "service": "EventBridge",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        },
+        {
+          "name": "health_check_rule",
+          "service": "EventBridge",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        },
+        {
+          "name": "common_layer",
+          "service": "Lambda",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "powertools_layer",
+          "service": "Lambda",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "dlq",
+          "service": "SQS",
+          "construct": "Queue",
+          "purpose": "Message queuing"
+        },
+        {
+          "name": "notification_topic",
+          "service": "SNS",
+          "construct": "Topic",
+          "purpose": "Event notifications"
+        },
+        {
+          "name": "lambda_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "ingest_function",
+          "service": "Lambda",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "etl_function",
+          "service": "Lambda",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "health_check_function",
+          "service": "Lambda",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "ingestion_rule",
+          "service": "EventBridge",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        },
+        {
+          "name": "health_check_rule",
+          "service": "EventBridge",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IngestFunctionName",
+          "description": "Data ingestion Lambda function name"
+        },
+        {
+          "name": "ETLFunctionName",
+          "description": "ETL processing Lambda function name"
+        },
+        {
+          "name": "HealthCheckFunctionName",
+          "description": "Health check Lambda function name"
+        },
+        {
+          "name": "NotificationTopicArn",
+          "description": "SNS notification topic ARN"
+        },
+        {
+          "name": "DLQUrl",
+          "description": "Dead Letter Queue URL"
+        },
+        {
+          "name": "IngestFunctionName",
+          "description": "Data ingestion Lambda function name"
+        },
+        {
+          "name": "ETLFunctionName",
+          "description": "ETL processing Lambda function name"
+        },
+        {
+          "name": "HealthCheckFunctionName",
+          "description": "Health check Lambda function name"
+        },
+        {
+          "name": "NotificationTopicArn",
+          "description": "SNS notification topic ARN"
+        },
+        {
+          "name": "DLQUrl",
+          "description": "Dead Letter Queue URL"
+        }
+      ]
+    },
+    "DataStack": {
+      "purpose": "Data storage and management services",
+      "file_path": "infrastructure/data_stack.py",
+      "resource_count": 14,
+      "services_used": [
+        "Glue",
+        "S3",
+        "Athena",
+        "DynamoDB",
+        "IAM"
+      ],
+      "resources": [
+        {
+          "name": "raw_bucket",
+          "service": "S3",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "curated_bucket",
+          "service": "S3",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "exports_bucket",
+          "service": "S3",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "air_quality_table",
+          "service": "DynamoDB",
+          "construct": "Table",
+          "purpose": "Data storage and retrieval"
+        },
+        {
+          "name": "glue_database",
+          "service": "Glue",
+          "construct": "CfnDatabase",
+          "purpose": "Glue resource"
+        },
+        {
+          "name": "athena_workgroup",
+          "service": "Athena",
+          "construct": "CfnWorkGroup",
+          "purpose": "Athena resource"
+        },
+        {
+          "name": "glue_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "raw_bucket",
+          "service": "S3",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "curated_bucket",
+          "service": "S3",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "exports_bucket",
+          "service": "S3",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "air_quality_table",
+          "service": "DynamoDB",
+          "construct": "Table",
+          "purpose": "Data storage and retrieval"
+        },
+        {
+          "name": "glue_database",
+          "service": "Glue",
+          "construct": "CfnDatabase",
+          "purpose": "Glue resource"
+        },
+        {
+          "name": "athena_workgroup",
+          "service": "Athena",
+          "construct": "CfnWorkGroup",
+          "purpose": "Athena resource"
+        },
+        {
+          "name": "glue_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "RawBucketName",
+          "description": "S3 bucket for raw NSW air quality data"
+        },
+        {
+          "name": "CuratedBucketName",
+          "description": "S3 bucket for curated/processed data"
+        },
+        {
+          "name": "ExportsBucketName",
+          "description": "S3 bucket for data exports"
+        },
+        {
+          "name": "DynamoDBTableName",
+          "description": "DynamoDB table for air quality hot aggregates"
+        },
+        {
+          "name": "RawBucketName",
+          "description": "S3 bucket for raw NSW air quality data"
+        },
+        {
+          "name": "CuratedBucketName",
+          "description": "S3 bucket for curated/processed data"
+        },
+        {
+          "name": "ExportsBucketName",
+          "description": "S3 bucket for data exports"
+        },
+        {
+          "name": "DynamoDBTableName",
+          "description": "DynamoDB table for air quality hot aggregates"
+        }
+      ]
+    },
+    "ApiStack": {
+      "purpose": "API and authentication services",
+      "file_path": "infrastructure/api_stack.py",
+      "resource_count": 14,
+      "services_used": [
+        "IAM",
+        "Cognito",
+        "Unknown",
+        "AppSync",
+        "WAF"
+      ],
+      "resources": [
+        {
+          "name": "user_pool",
+          "service": "Cognito",
+          "construct": "UserPool",
+          "purpose": "User authentication"
+        },
+        {
+          "name": "app_client",
+          "service": "Unknown",
+          "construct": "add_client",
+          "purpose": "Unknown resource"
+        },
+        {
+          "name": "identity_pool",
+          "service": "Cognito",
+          "construct": "CfnIdentityPool",
+          "purpose": "User authentication"
+        },
+        {
+          "name": "web_acl",
+          "service": "WAF",
+          "construct": "CfnWebACL",
+          "purpose": "WAF resource"
+        },
+        {
+          "name": "api",
+          "service": "AppSync",
+          "construct": "GraphqlApi",
+          "purpose": "API endpoint"
+        },
+        {
+          "name": "authenticated_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "unauthenticated_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "user_pool",
+          "service": "Cognito",
+          "construct": "UserPool",
+          "purpose": "User authentication"
+        },
+        {
+          "name": "app_client",
+          "service": "Unknown",
+          "construct": "add_client",
+          "purpose": "Unknown resource"
+        },
+        {
+          "name": "identity_pool",
+          "service": "Cognito",
+          "construct": "CfnIdentityPool",
+          "purpose": "User authentication"
+        },
+        {
+          "name": "web_acl",
+          "service": "WAF",
+          "construct": "CfnWebACL",
+          "purpose": "WAF resource"
+        },
+        {
+          "name": "api",
+          "service": "AppSync",
+          "construct": "GraphqlApi",
+          "purpose": "API endpoint"
+        },
+        {
+          "name": "authenticated_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "unauthenticated_role",
+          "service": "IAM",
+          "construct": "Role",
+          "purpose": "Access control"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "UserPoolId",
+          "description": "Cognito User Pool ID"
+        },
+        {
+          "name": "UserPoolClientId",
+          "description": "Cognito User Pool Client ID"
+        },
+        {
+          "name": "IdentityPoolId",
+          "description": "Cognito Identity Pool ID"
+        },
+        {
+          "name": "GraphQLApiUrl",
+          "description": "AppSync GraphQL API URL"
+        },
+        {
+          "name": "GraphQLApiId",
+          "description": "AppSync GraphQL API ID"
+        },
+        {
+          "name": "WebACLId",
+          "description": "WAF Web ACL ID"
+        },
+        {
+          "name": "UserPoolId",
+          "description": "Cognito User Pool ID"
+        },
+        {
+          "name": "UserPoolClientId",
+          "description": "Cognito User Pool Client ID"
+        },
+        {
+          "name": "IdentityPoolId",
+          "description": "Cognito Identity Pool ID"
+        },
+        {
+          "name": "GraphQLApiUrl",
+          "description": "AppSync GraphQL API URL"
+        },
+        {
+          "name": "GraphQLApiId",
+          "description": "AppSync GraphQL API ID"
+        },
+        {
+          "name": "WebACLId",
+          "description": "WAF Web ACL ID"
+        }
+      ]
+    },
+    "FrontendStack": {
+      "purpose": "Frontend hosting and distribution",
+      "file_path": "infrastructure/frontend_stack.py",
+      "resource_count": 4,
+      "services_used": [
+        "Amplify"
+      ],
+      "resources": [
+        {
+          "name": "amplify_app",
+          "service": "Amplify",
+          "construct": "CfnApp",
+          "purpose": "Amplify resource"
+        },
+        {
+          "name": "main_branch",
+          "service": "Amplify",
+          "construct": "CfnBranch",
+          "purpose": "Amplify resource"
+        },
+        {
+          "name": "amplify_app",
+          "service": "Amplify",
+          "construct": "CfnApp",
+          "purpose": "Amplify resource"
+        },
+        {
+          "name": "main_branch",
+          "service": "Amplify",
+          "construct": "CfnBranch",
+          "purpose": "Amplify resource"
+        }
+      ],
+      "outputs": []
+    }
+  },
+  "services": {
+    "Location Service": {
+      "resource_count": 4,
+      "stacks_used_in": [
+        "LocationStack"
+      ],
+      "resources": [
+        {
+          "name": "air_quality_map",
+          "stack": "LocationStack",
+          "construct": "CfnMap",
+          "purpose": "Location Service resource"
+        },
+        {
+          "name": "place_index",
+          "stack": "LocationStack",
+          "construct": "CfnPlaceIndex",
+          "purpose": "Location Service resource"
+        },
+        {
+          "name": "air_quality_map",
+          "stack": "LocationStack",
+          "construct": "CfnMap",
+          "purpose": "Location Service resource"
+        },
+        {
+          "name": "place_index",
+          "stack": "LocationStack",
+          "construct": "CfnPlaceIndex",
+          "purpose": "Location Service resource"
+        }
+      ],
+      "primary_purpose": "Geographic and location services",
+      "configurations": [
+        {
+          "resource": "air_quality_map",
+          "config": {
+            "map_name": "nsw-air-quality-map",
+            "configuration": "complex_value",
+            "description": "Interactive map for NSW air quality data visualization"
+          }
+        },
+        {
+          "resource": "place_index",
+          "config": {
+            "index_name": "nsw-places",
+            "data_source": "Esri",
+            "data_source_configuration": "complex_value",
+            "description": "Geocoding index for NSW locations"
+          }
+        },
+        {
+          "resource": "air_quality_map",
+          "config": {
+            "map_name": "nsw-air-quality-map",
+            "configuration": "complex_value",
+            "description": "Interactive map for NSW air quality data visualization"
+          }
+        },
+        {
+          "resource": "place_index",
+          "config": {
+            "index_name": "nsw-places",
+            "data_source": "Esri",
+            "data_source_configuration": "complex_value",
+            "description": "Geocoding index for NSW locations"
+          }
+        }
+      ]
+    },
+    "Lambda": {
+      "resource_count": 10,
+      "stacks_used_in": [
+        "ComputeStack"
+      ],
+      "resources": [
+        {
+          "name": "common_layer",
+          "stack": "ComputeStack",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "powertools_layer",
+          "stack": "ComputeStack",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "ingest_function",
+          "stack": "ComputeStack",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "etl_function",
+          "stack": "ComputeStack",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "health_check_function",
+          "stack": "ComputeStack",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "common_layer",
+          "stack": "ComputeStack",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "powertools_layer",
+          "stack": "ComputeStack",
+          "construct": "LayerVersion",
+          "purpose": "Lambda resource"
+        },
+        {
+          "name": "ingest_function",
+          "stack": "ComputeStack",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "etl_function",
+          "stack": "ComputeStack",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        },
+        {
+          "name": "health_check_function",
+          "stack": "ComputeStack",
+          "construct": "Function",
+          "purpose": "Serverless compute"
+        }
+      ],
+      "primary_purpose": "Serverless compute and processing",
+      "configurations": [
+        {
+          "resource": "common_layer",
+          "config": {
+            "code": "complex_value",
+            "compatible_runtimes": "complex_value",
+            "description": "Common dependencies including Lambda Powertools for OpenData Pulse Lambda functions"
+          }
+        },
+        {
+          "resource": "powertools_layer",
+          "config": {
+            "code": "complex_value",
+            "compatible_runtimes": "complex_value",
+            "description": "AWS Lambda Powertools for observability and best practices"
+          }
+        },
+        {
+          "resource": "ingest_function",
+          "config": {
+            "runtime": "$_lambda.Runtime.PYTHON_3_9",
+            "code": "complex_value",
+            "handler": "index.handler",
+            "timeout": "complex_value",
+            "memory_size": 512,
+            "layers": "complex_value",
+            "role": "$self.lambda_role",
+            "environment": "complex_value",
+            "log_retention": "$logs.RetentionDays.ONE_MONTH",
+            "dead_letter_queue_enabled": true,
+            "dead_letter_queue": "$self.dlq"
+          }
+        },
+        {
+          "resource": "etl_function",
+          "config": {
+            "runtime": "$_lambda.Runtime.PYTHON_3_9",
+            "code": "complex_value",
+            "handler": "index.handler",
+            "timeout": "complex_value",
+            "memory_size": 1024,
+            "layers": "complex_value",
+            "role": "$self.lambda_role",
+            "environment": "complex_value",
+            "log_retention": "$logs.RetentionDays.ONE_MONTH",
+            "dead_letter_queue_enabled": true,
+            "dead_letter_queue": "$self.dlq"
+          }
+        },
+        {
+          "resource": "health_check_function",
+          "config": {
+            "runtime": "$_lambda.Runtime.PYTHON_3_9",
+            "code": "complex_value",
+            "handler": "index.handler",
+            "timeout": "complex_value",
+            "memory_size": 128,
+            "layers": "complex_value",
+            "role": "$self.lambda_role",
+            "environment": "complex_value",
+            "log_retention": "$logs.RetentionDays.ONE_WEEK"
+          }
+        },
+        {
+          "resource": "common_layer",
+          "config": {
+            "code": "complex_value",
+            "compatible_runtimes": "complex_value",
+            "description": "Common dependencies including Lambda Powertools for OpenData Pulse Lambda functions"
+          }
+        },
+        {
+          "resource": "powertools_layer",
+          "config": {
+            "code": "complex_value",
+            "compatible_runtimes": "complex_value",
+            "description": "AWS Lambda Powertools for observability and best practices"
+          }
+        },
+        {
+          "resource": "ingest_function",
+          "config": {
+            "runtime": "$_lambda.Runtime.PYTHON_3_9",
+            "code": "complex_value",
+            "handler": "index.handler",
+            "timeout": "complex_value",
+            "memory_size": 512,
+            "layers": "complex_value",
+            "role": "$self.lambda_role",
+            "environment": "complex_value",
+            "log_retention": "$logs.RetentionDays.ONE_MONTH",
+            "dead_letter_queue_enabled": true,
+            "dead_letter_queue": "$self.dlq"
+          }
+        },
+        {
+          "resource": "etl_function",
+          "config": {
+            "runtime": "$_lambda.Runtime.PYTHON_3_9",
+            "code": "complex_value",
+            "handler": "index.handler",
+            "timeout": "complex_value",
+            "memory_size": 1024,
+            "layers": "complex_value",
+            "role": "$self.lambda_role",
+            "environment": "complex_value",
+            "log_retention": "$logs.RetentionDays.ONE_MONTH",
+            "dead_letter_queue_enabled": true,
+            "dead_letter_queue": "$self.dlq"
+          }
+        },
+        {
+          "resource": "health_check_function",
+          "config": {
+            "runtime": "$_lambda.Runtime.PYTHON_3_9",
+            "code": "complex_value",
+            "handler": "index.handler",
+            "timeout": "complex_value",
+            "memory_size": 128,
+            "layers": "complex_value",
+            "role": "$self.lambda_role",
+            "environment": "complex_value",
+            "log_retention": "$logs.RetentionDays.ONE_WEEK"
+          }
+        }
+      ]
+    },
+    "SQS": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "ComputeStack"
+      ],
+      "resources": [
+        {
+          "name": "dlq",
+          "stack": "ComputeStack",
+          "construct": "Queue",
+          "purpose": "Message queuing"
+        },
+        {
+          "name": "dlq",
+          "stack": "ComputeStack",
+          "construct": "Queue",
+          "purpose": "Message queuing"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "dlq",
+          "config": {
+            "queue_name": "opendata-pulse-processing-dlq",
+            "retention_period": "complex_value",
+            "removal_policy": "$RemovalPolicy.DESTROY"
+          }
+        },
+        {
+          "resource": "dlq",
+          "config": {
+            "queue_name": "opendata-pulse-processing-dlq",
+            "retention_period": "complex_value",
+            "removal_policy": "$RemovalPolicy.DESTROY"
+          }
+        }
+      ]
+    },
+    "SNS": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "ComputeStack"
+      ],
+      "resources": [
+        {
+          "name": "notification_topic",
+          "stack": "ComputeStack",
+          "construct": "Topic",
+          "purpose": "Event notifications"
+        },
+        {
+          "name": "notification_topic",
+          "stack": "ComputeStack",
+          "construct": "Topic",
+          "purpose": "Event notifications"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "notification_topic",
+          "config": {
+            "topic_name": "opendata-pulse-notifications",
+            "display_name": "OpenData Pulse Notifications"
+          }
+        },
+        {
+          "resource": "notification_topic",
+          "config": {
+            "topic_name": "opendata-pulse-notifications",
+            "display_name": "OpenData Pulse Notifications"
+          }
+        }
+      ]
+    },
+    "IAM": {
+      "resource_count": 8,
+      "stacks_used_in": [
+        "DataStack",
+        "ComputeStack",
+        "ApiStack"
+      ],
+      "resources": [
+        {
+          "name": "lambda_role",
+          "stack": "ComputeStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "glue_role",
+          "stack": "DataStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "authenticated_role",
+          "stack": "ApiStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "unauthenticated_role",
+          "stack": "ApiStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "lambda_role",
+          "stack": "ComputeStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "glue_role",
+          "stack": "DataStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "authenticated_role",
+          "stack": "ApiStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        },
+        {
+          "name": "unauthenticated_role",
+          "stack": "ApiStack",
+          "construct": "Role",
+          "purpose": "Access control"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "lambda_role",
+          "config": {
+            "assumed_by": "complex_value",
+            "managed_policies": "complex_value"
+          }
+        },
+        {
+          "resource": "glue_role",
+          "config": {
+            "assumed_by": "complex_value",
+            "managed_policies": "complex_value"
+          }
+        },
+        {
+          "resource": "authenticated_role",
+          "config": {
+            "assumed_by": "complex_value",
+            "managed_policies": "complex_value"
+          }
+        },
+        {
+          "resource": "unauthenticated_role",
+          "config": {
+            "assumed_by": "complex_value"
+          }
+        },
+        {
+          "resource": "lambda_role",
+          "config": {
+            "assumed_by": "complex_value",
+            "managed_policies": "complex_value"
+          }
+        },
+        {
+          "resource": "glue_role",
+          "config": {
+            "assumed_by": "complex_value",
+            "managed_policies": "complex_value"
+          }
+        },
+        {
+          "resource": "authenticated_role",
+          "config": {
+            "assumed_by": "complex_value",
+            "managed_policies": "complex_value"
+          }
+        },
+        {
+          "resource": "unauthenticated_role",
+          "config": {
+            "assumed_by": "complex_value"
+          }
+        }
+      ]
+    },
+    "EventBridge": {
+      "resource_count": 4,
+      "stacks_used_in": [
+        "ComputeStack"
+      ],
+      "resources": [
+        {
+          "name": "ingestion_rule",
+          "stack": "ComputeStack",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        },
+        {
+          "name": "health_check_rule",
+          "stack": "ComputeStack",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        },
+        {
+          "name": "ingestion_rule",
+          "stack": "ComputeStack",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        },
+        {
+          "name": "health_check_rule",
+          "stack": "ComputeStack",
+          "construct": "Rule",
+          "purpose": "Event scheduling"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "ingestion_rule",
+          "config": {
+            "schedule": "complex_value",
+            "description": "Trigger data ingestion every hour"
+          }
+        },
+        {
+          "resource": "health_check_rule",
+          "config": {
+            "schedule": "complex_value",
+            "description": "Trigger health check every 5 minutes"
+          }
+        },
+        {
+          "resource": "ingestion_rule",
+          "config": {
+            "schedule": "complex_value",
+            "description": "Trigger data ingestion every hour"
+          }
+        },
+        {
+          "resource": "health_check_rule",
+          "config": {
+            "schedule": "complex_value",
+            "description": "Trigger health check every 5 minutes"
+          }
+        }
+      ]
+    },
+    "S3": {
+      "resource_count": 6,
+      "stacks_used_in": [
+        "DataStack"
+      ],
+      "resources": [
+        {
+          "name": "raw_bucket",
+          "stack": "DataStack",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "curated_bucket",
+          "stack": "DataStack",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "exports_bucket",
+          "stack": "DataStack",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "raw_bucket",
+          "stack": "DataStack",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "curated_bucket",
+          "stack": "DataStack",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        },
+        {
+          "name": "exports_bucket",
+          "stack": "DataStack",
+          "construct": "Bucket",
+          "purpose": "Data storage"
+        }
+      ],
+      "primary_purpose": "Data storage and management",
+      "configurations": [
+        {
+          "resource": "raw_bucket",
+          "config": {
+            "bucket_name": "complex_value",
+            "versioned": true,
+            "encryption": "$s3.BucketEncryption.S3_MANAGED",
+            "block_public_access": "$s3.BlockPublicAccess.BLOCK_ALL",
+            "lifecycle_rules": "complex_value",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        },
+        {
+          "resource": "curated_bucket",
+          "config": {
+            "bucket_name": "complex_value",
+            "versioned": true,
+            "encryption": "$s3.BucketEncryption.S3_MANAGED",
+            "block_public_access": "$s3.BlockPublicAccess.BLOCK_ALL",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        },
+        {
+          "resource": "exports_bucket",
+          "config": {
+            "bucket_name": "complex_value",
+            "versioned": false,
+            "encryption": "$s3.BucketEncryption.S3_MANAGED",
+            "block_public_access": "$s3.BlockPublicAccess.BLOCK_ALL",
+            "lifecycle_rules": "complex_value",
+            "removal_policy": "$RemovalPolicy.DESTROY"
+          }
+        },
+        {
+          "resource": "raw_bucket",
+          "config": {
+            "bucket_name": "complex_value",
+            "versioned": true,
+            "encryption": "$s3.BucketEncryption.S3_MANAGED",
+            "block_public_access": "$s3.BlockPublicAccess.BLOCK_ALL",
+            "lifecycle_rules": "complex_value",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        },
+        {
+          "resource": "curated_bucket",
+          "config": {
+            "bucket_name": "complex_value",
+            "versioned": true,
+            "encryption": "$s3.BucketEncryption.S3_MANAGED",
+            "block_public_access": "$s3.BlockPublicAccess.BLOCK_ALL",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        },
+        {
+          "resource": "exports_bucket",
+          "config": {
+            "bucket_name": "complex_value",
+            "versioned": false,
+            "encryption": "$s3.BucketEncryption.S3_MANAGED",
+            "block_public_access": "$s3.BlockPublicAccess.BLOCK_ALL",
+            "lifecycle_rules": "complex_value",
+            "removal_policy": "$RemovalPolicy.DESTROY"
+          }
+        }
+      ]
+    },
+    "DynamoDB": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "DataStack"
+      ],
+      "resources": [
+        {
+          "name": "air_quality_table",
+          "stack": "DataStack",
+          "construct": "Table",
+          "purpose": "Data storage and retrieval"
+        },
+        {
+          "name": "air_quality_table",
+          "stack": "DataStack",
+          "construct": "Table",
+          "purpose": "Data storage and retrieval"
+        }
+      ],
+      "primary_purpose": "Data storage and management",
+      "configurations": [
+        {
+          "resource": "air_quality_table",
+          "config": {
+            "table_name": "opendata-pulse-air-quality",
+            "partition_key": "complex_value",
+            "sort_key": "complex_value",
+            "billing_mode": "$dynamodb.BillingMode.PAY_PER_REQUEST",
+            "time_to_live_attribute": "TTL",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        },
+        {
+          "resource": "air_quality_table",
+          "config": {
+            "table_name": "opendata-pulse-air-quality",
+            "partition_key": "complex_value",
+            "sort_key": "complex_value",
+            "billing_mode": "$dynamodb.BillingMode.PAY_PER_REQUEST",
+            "time_to_live_attribute": "TTL",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        }
+      ]
+    },
+    "Glue": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "DataStack"
+      ],
+      "resources": [
+        {
+          "name": "glue_database",
+          "stack": "DataStack",
+          "construct": "CfnDatabase",
+          "purpose": "Glue resource"
+        },
+        {
+          "name": "glue_database",
+          "stack": "DataStack",
+          "construct": "CfnDatabase",
+          "purpose": "Glue resource"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "glue_database",
+          "config": {
+            "catalog_id": "$cdk.Aws.ACCOUNT_ID",
+            "database_input": "complex_value"
+          }
+        },
+        {
+          "resource": "glue_database",
+          "config": {
+            "catalog_id": "$cdk.Aws.ACCOUNT_ID",
+            "database_input": "complex_value"
+          }
+        }
+      ]
+    },
+    "Athena": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "DataStack"
+      ],
+      "resources": [
+        {
+          "name": "athena_workgroup",
+          "stack": "DataStack",
+          "construct": "CfnWorkGroup",
+          "purpose": "Athena resource"
+        },
+        {
+          "name": "athena_workgroup",
+          "stack": "DataStack",
+          "construct": "CfnWorkGroup",
+          "purpose": "Athena resource"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "athena_workgroup",
+          "config": {
+            "name": "opendata-pulse-workgroup",
+            "description": "Workgroup for OpenData Pulse queries",
+            "work_group_configuration": "complex_value"
+          }
+        },
+        {
+          "resource": "athena_workgroup",
+          "config": {
+            "name": "opendata-pulse-workgroup",
+            "description": "Workgroup for OpenData Pulse queries",
+            "work_group_configuration": "complex_value"
+          }
+        }
+      ]
+    },
+    "Cognito": {
+      "resource_count": 4,
+      "stacks_used_in": [
+        "ApiStack"
+      ],
+      "resources": [
+        {
+          "name": "user_pool",
+          "stack": "ApiStack",
+          "construct": "UserPool",
+          "purpose": "User authentication"
+        },
+        {
+          "name": "identity_pool",
+          "stack": "ApiStack",
+          "construct": "CfnIdentityPool",
+          "purpose": "User authentication"
+        },
+        {
+          "name": "user_pool",
+          "stack": "ApiStack",
+          "construct": "UserPool",
+          "purpose": "User authentication"
+        },
+        {
+          "name": "identity_pool",
+          "stack": "ApiStack",
+          "construct": "CfnIdentityPool",
+          "purpose": "User authentication"
+        }
+      ],
+      "primary_purpose": "API and authentication services",
+      "configurations": [
+        {
+          "resource": "user_pool",
+          "config": {
+            "user_pool_name": "opendata-pulse-users",
+            "self_sign_up_enabled": true,
+            "sign_in_aliases": "complex_value",
+            "standard_attributes": "complex_value",
+            "custom_attributes": "complex_value",
+            "password_policy": "complex_value",
+            "account_recovery": "$cognito.AccountRecovery.EMAIL_ONLY",
+            "user_verification": "complex_value",
+            "mfa": "$cognito.Mfa.OPTIONAL",
+            "mfa_second_factor": "complex_value",
+            "device_tracking": "complex_value",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        },
+        {
+          "resource": "identity_pool",
+          "config": {
+            "identity_pool_name": "opendata-pulse-identity-pool",
+            "allow_unauthenticated_identities": false,
+            "cognito_identity_providers": "complex_value"
+          }
+        },
+        {
+          "resource": "user_pool",
+          "config": {
+            "user_pool_name": "opendata-pulse-users",
+            "self_sign_up_enabled": true,
+            "sign_in_aliases": "complex_value",
+            "standard_attributes": "complex_value",
+            "custom_attributes": "complex_value",
+            "password_policy": "complex_value",
+            "account_recovery": "$cognito.AccountRecovery.EMAIL_ONLY",
+            "user_verification": "complex_value",
+            "mfa": "$cognito.Mfa.OPTIONAL",
+            "mfa_second_factor": "complex_value",
+            "device_tracking": "complex_value",
+            "removal_policy": "$RemovalPolicy.RETAIN"
+          }
+        },
+        {
+          "resource": "identity_pool",
+          "config": {
+            "identity_pool_name": "opendata-pulse-identity-pool",
+            "allow_unauthenticated_identities": false,
+            "cognito_identity_providers": "complex_value"
+          }
+        }
+      ]
+    },
+    "Unknown": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "ApiStack"
+      ],
+      "resources": [
+        {
+          "name": "app_client",
+          "stack": "ApiStack",
+          "construct": "add_client",
+          "purpose": "Unknown resource"
+        },
+        {
+          "name": "app_client",
+          "stack": "ApiStack",
+          "construct": "add_client",
+          "purpose": "Unknown resource"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "app_client",
+          "config": {
+            "user_pool_client_name": "opendata-pulse-web-client",
+            "generate_secret": false,
+            "supported_identity_providers": "complex_value"
+          }
+        },
+        {
+          "resource": "app_client",
+          "config": {
+            "user_pool_client_name": "opendata-pulse-web-client",
+            "generate_secret": false,
+            "supported_identity_providers": "complex_value"
+          }
+        }
+      ]
+    },
+    "WAF": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "ApiStack"
+      ],
+      "resources": [
+        {
+          "name": "web_acl",
+          "stack": "ApiStack",
+          "construct": "CfnWebACL",
+          "purpose": "WAF resource"
+        },
+        {
+          "name": "web_acl",
+          "stack": "ApiStack",
+          "construct": "CfnWebACL",
+          "purpose": "WAF resource"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "web_acl",
+          "config": {
+            "default_action": "complex_value",
+            "scope": "REGIONAL",
+            "visibility_config": "complex_value"
+          }
+        },
+        {
+          "resource": "web_acl",
+          "config": {
+            "default_action": "complex_value",
+            "scope": "REGIONAL",
+            "visibility_config": "complex_value"
+          }
+        }
+      ]
+    },
+    "AppSync": {
+      "resource_count": 2,
+      "stacks_used_in": [
+        "ApiStack"
+      ],
+      "resources": [
+        {
+          "name": "api",
+          "stack": "ApiStack",
+          "construct": "GraphqlApi",
+          "purpose": "API endpoint"
+        },
+        {
+          "name": "api",
+          "stack": "ApiStack",
+          "construct": "GraphqlApi",
+          "purpose": "API endpoint"
+        }
+      ],
+      "primary_purpose": "API and authentication services",
+      "configurations": [
+        {
+          "resource": "api",
+          "config": {
+            "name": "opendata-pulse-api",
+            "schema": "complex_value",
+            "authorization_config": "complex_value",
+            "xray_enabled": true
+          }
+        },
+        {
+          "resource": "api",
+          "config": {
+            "name": "opendata-pulse-api",
+            "schema": "complex_value",
+            "authorization_config": "complex_value",
+            "xray_enabled": true
+          }
+        }
+      ]
+    },
+    "Amplify": {
+      "resource_count": 4,
+      "stacks_used_in": [
+        "FrontendStack"
+      ],
+      "resources": [
+        {
+          "name": "amplify_app",
+          "stack": "FrontendStack",
+          "construct": "CfnApp",
+          "purpose": "Amplify resource"
+        },
+        {
+          "name": "main_branch",
+          "stack": "FrontendStack",
+          "construct": "CfnBranch",
+          "purpose": "Amplify resource"
+        },
+        {
+          "name": "amplify_app",
+          "stack": "FrontendStack",
+          "construct": "CfnApp",
+          "purpose": "Amplify resource"
+        },
+        {
+          "name": "main_branch",
+          "stack": "FrontendStack",
+          "construct": "CfnBranch",
+          "purpose": "Amplify resource"
+        }
+      ],
+      "primary_purpose": "Infrastructure services",
+      "configurations": [
+        {
+          "resource": "amplify_app",
+          "config": {
+            "name": "opendata-pulse-frontend",
+            "description": "OpenData Pulse React frontend application"
+          }
+        },
+        {
+          "resource": "main_branch",
+          "config": {
+            "app_id": "$self.amplify_app.attr_app_id",
+            "branch_name": "main",
+            "description": "Main branch for OpenData Pulse frontend"
+          }
+        },
+        {
+          "resource": "amplify_app",
+          "config": {
+            "name": "opendata-pulse-frontend",
+            "description": "OpenData Pulse React frontend application"
+          }
+        },
+        {
+          "resource": "main_branch",
+          "config": {
+            "app_id": "$self.amplify_app.attr_app_id",
+            "branch_name": "main",
+            "description": "Main branch for OpenData Pulse frontend"
+          }
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "dependency_map": {
+      "ComputeStack": [
+        {
+          "depends_on": "DataStack",
+          "type": "explicit",
+          "description": "ComputeStack depends on DataStack"
+        },
+        {
+          "depends_on": "DataStack",
+          "type": "explicit",
+          "description": "ComputeStack depends on DataStack"
+        }
+      ],
+      "ApiStack": [
+        {
+          "depends_on": "DataStack",
+          "type": "explicit",
+          "description": "ApiStack depends on DataStack"
+        },
+        {
+          "depends_on": "ComputeStack",
+          "type": "explicit",
+          "description": "ApiStack depends on ComputeStack"
+        },
+        {
+          "depends_on": "DataStack",
+          "type": "explicit",
+          "description": "ApiStack depends on DataStack"
+        },
+        {
+          "depends_on": "ComputeStack",
+          "type": "explicit",
+          "description": "ApiStack depends on ComputeStack"
+        }
+      ],
+      "FrontendStack": [
+        {
+          "depends_on": "ApiStack",
+          "type": "explicit",
+          "description": "FrontendStack depends on ApiStack"
+        },
+        {
+          "depends_on": "ApiStack",
+          "type": "explicit",
+          "description": "FrontendStack depends on ApiStack"
+        }
+      ],
+      "LocationStack": [
+        {
+          "depends_on": "DataStack",
+          "type": "explicit",
+          "description": "LocationStack depends on DataStack"
+        },
+        {
+          "depends_on": "DataStack",
+          "type": "explicit",
+          "description": "LocationStack depends on DataStack"
+        }
+      ]
+    },
+    "deployment_order": [
+      "DataStack",
+      "ComputeStack",
+      "ApiStack",
+      "FrontendStack",
+      "LocationStack"
+    ],
+    "dependency_count": 10
+  },
+  "relationships": {
+    "Lambda_to_S3": {
+      "source_service": "Lambda",
+      "target_service": "S3",
+      "relationship_types": [
+        "stores_in"
+      ],
+      "interactions": [
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "raw_bucket",
+          "description": "common_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "curated_bucket",
+          "description": "common_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "exports_bucket",
+          "description": "common_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "raw_bucket",
+          "description": "powertools_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "curated_bucket",
+          "description": "powertools_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "exports_bucket",
+          "description": "powertools_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "raw_bucket",
+          "description": "ingest_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "curated_bucket",
+          "description": "ingest_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "exports_bucket",
+          "description": "ingest_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "raw_bucket",
+          "description": "etl_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "curated_bucket",
+          "description": "etl_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "exports_bucket",
+          "description": "etl_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "raw_bucket",
+          "description": "health_check_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "curated_bucket",
+          "description": "health_check_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "exports_bucket",
+          "description": "health_check_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "raw_bucket",
+          "description": "common_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "curated_bucket",
+          "description": "common_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "exports_bucket",
+          "description": "common_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "raw_bucket",
+          "description": "common_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "curated_bucket",
+          "description": "common_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "exports_bucket",
+          "description": "common_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "raw_bucket",
+          "description": "powertools_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "curated_bucket",
+          "description": "powertools_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "exports_bucket",
+          "description": "powertools_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "raw_bucket",
+          "description": "powertools_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "curated_bucket",
+          "description": "powertools_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "exports_bucket",
+          "description": "powertools_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "raw_bucket",
+          "description": "ingest_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "curated_bucket",
+          "description": "ingest_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "exports_bucket",
+          "description": "ingest_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "raw_bucket",
+          "description": "ingest_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "curated_bucket",
+          "description": "ingest_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "exports_bucket",
+          "description": "ingest_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "raw_bucket",
+          "description": "etl_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "curated_bucket",
+          "description": "etl_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "exports_bucket",
+          "description": "etl_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "raw_bucket",
+          "description": "etl_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "curated_bucket",
+          "description": "etl_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "exports_bucket",
+          "description": "etl_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "raw_bucket",
+          "description": "health_check_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "curated_bucket",
+          "description": "health_check_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "exports_bucket",
+          "description": "health_check_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "raw_bucket",
+          "description": "health_check_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "curated_bucket",
+          "description": "health_check_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "exports_bucket",
+          "description": "health_check_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "raw_bucket",
+          "description": "common_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "curated_bucket",
+          "description": "common_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "exports_bucket",
+          "description": "common_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "raw_bucket",
+          "description": "common_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "curated_bucket",
+          "description": "common_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "exports_bucket",
+          "description": "common_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "raw_bucket",
+          "description": "powertools_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "curated_bucket",
+          "description": "powertools_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "exports_bucket",
+          "description": "powertools_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "raw_bucket",
+          "description": "powertools_layer stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "curated_bucket",
+          "description": "powertools_layer stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "exports_bucket",
+          "description": "powertools_layer stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "raw_bucket",
+          "description": "ingest_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "curated_bucket",
+          "description": "ingest_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "exports_bucket",
+          "description": "ingest_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "raw_bucket",
+          "description": "ingest_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "curated_bucket",
+          "description": "ingest_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "exports_bucket",
+          "description": "ingest_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "raw_bucket",
+          "description": "etl_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "curated_bucket",
+          "description": "etl_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "exports_bucket",
+          "description": "etl_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "raw_bucket",
+          "description": "etl_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "curated_bucket",
+          "description": "etl_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "exports_bucket",
+          "description": "etl_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "raw_bucket",
+          "description": "health_check_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "curated_bucket",
+          "description": "health_check_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "exports_bucket",
+          "description": "health_check_function stores_in exports_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "raw_bucket",
+          "description": "health_check_function stores_in raw_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "curated_bucket",
+          "description": "health_check_function stores_in curated_bucket"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "exports_bucket",
+          "description": "health_check_function stores_in exports_bucket"
+        }
+      ]
+    },
+    "Lambda_to_DynamoDB": {
+      "source_service": "Lambda",
+      "target_service": "DynamoDB",
+      "relationship_types": [
+        "stores_in"
+      ],
+      "interactions": [
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "air_quality_table",
+          "description": "common_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "air_quality_table",
+          "description": "powertools_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "air_quality_table",
+          "description": "ingest_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "air_quality_table",
+          "description": "etl_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "air_quality_table",
+          "description": "health_check_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "air_quality_table",
+          "description": "common_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "air_quality_table",
+          "description": "common_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "air_quality_table",
+          "description": "powertools_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "air_quality_table",
+          "description": "powertools_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "air_quality_table",
+          "description": "ingest_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "air_quality_table",
+          "description": "ingest_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "air_quality_table",
+          "description": "etl_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "air_quality_table",
+          "description": "etl_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "air_quality_table",
+          "description": "health_check_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "air_quality_table",
+          "description": "health_check_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "air_quality_table",
+          "description": "common_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "common_layer",
+          "target_component": "air_quality_table",
+          "description": "common_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "air_quality_table",
+          "description": "powertools_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "powertools_layer",
+          "target_component": "air_quality_table",
+          "description": "powertools_layer stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "air_quality_table",
+          "description": "ingest_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "ingest_function",
+          "target_component": "air_quality_table",
+          "description": "ingest_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "air_quality_table",
+          "description": "etl_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "etl_function",
+          "target_component": "air_quality_table",
+          "description": "etl_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "air_quality_table",
+          "description": "health_check_function stores_in air_quality_table"
+        },
+        {
+          "type": "stores_in",
+          "source_component": "health_check_function",
+          "target_component": "air_quality_table",
+          "description": "health_check_function stores_in air_quality_table"
+        }
+      ]
+    },
+    "EventBridge_to_Lambda": {
+      "source_service": "EventBridge",
+      "target_service": "Lambda",
+      "relationship_types": [
+        "triggers"
+      ],
+      "interactions": [
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "common_layer",
+          "description": "ingestion_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "powertools_layer",
+          "description": "ingestion_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "ingest_function",
+          "description": "ingestion_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "etl_function",
+          "description": "ingestion_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "health_check_function",
+          "description": "ingestion_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "common_layer",
+          "description": "health_check_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "powertools_layer",
+          "description": "health_check_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "ingest_function",
+          "description": "health_check_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "etl_function",
+          "description": "health_check_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "health_check_function",
+          "description": "health_check_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "common_layer",
+          "description": "ingestion_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "powertools_layer",
+          "description": "ingestion_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "ingest_function",
+          "description": "ingestion_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "etl_function",
+          "description": "ingestion_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "health_check_function",
+          "description": "ingestion_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "common_layer",
+          "description": "ingestion_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "powertools_layer",
+          "description": "ingestion_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "ingest_function",
+          "description": "ingestion_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "etl_function",
+          "description": "ingestion_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "health_check_function",
+          "description": "ingestion_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "common_layer",
+          "description": "health_check_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "powertools_layer",
+          "description": "health_check_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "ingest_function",
+          "description": "health_check_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "etl_function",
+          "description": "health_check_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "health_check_function",
+          "description": "health_check_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "common_layer",
+          "description": "health_check_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "powertools_layer",
+          "description": "health_check_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "ingest_function",
+          "description": "health_check_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "etl_function",
+          "description": "health_check_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "health_check_function",
+          "description": "health_check_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "common_layer",
+          "description": "ingestion_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "powertools_layer",
+          "description": "ingestion_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "ingest_function",
+          "description": "ingestion_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "etl_function",
+          "description": "ingestion_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "health_check_function",
+          "description": "ingestion_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "common_layer",
+          "description": "ingestion_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "powertools_layer",
+          "description": "ingestion_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "ingest_function",
+          "description": "ingestion_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "etl_function",
+          "description": "ingestion_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "ingestion_rule",
+          "target_component": "health_check_function",
+          "description": "ingestion_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "common_layer",
+          "description": "health_check_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "powertools_layer",
+          "description": "health_check_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "ingest_function",
+          "description": "health_check_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "etl_function",
+          "description": "health_check_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "health_check_function",
+          "description": "health_check_rule triggers health_check_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "common_layer",
+          "description": "health_check_rule triggers common_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "powertools_layer",
+          "description": "health_check_rule triggers powertools_layer"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "ingest_function",
+          "description": "health_check_rule triggers ingest_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "etl_function",
+          "description": "health_check_rule triggers etl_function"
+        },
+        {
+          "type": "triggers",
+          "source_component": "health_check_rule",
+          "target_component": "health_check_function",
+          "description": "health_check_rule triggers health_check_function"
+        }
+      ]
+    },
+    "AppSync_to_Cognito": {
+      "source_service": "AppSync",
+      "target_service": "Cognito",
+      "relationship_types": [
+        "authenticates_with"
+      ],
+      "interactions": [
+        {
+          "type": "authenticates_with",
+          "source_component": "api",
+          "target_component": "user_pool",
+          "description": "api authenticates_with user_pool"
+        },
+        {
+          "type": "authenticates_with",
+          "source_component": "api",
+          "target_component": "user_pool",
+          "description": "api authenticates_with user_pool"
+        },
+        {
+          "type": "authenticates_with",
+          "source_component": "api",
+          "target_component": "user_pool",
+          "description": "api authenticates_with user_pool"
+        },
+        {
+          "type": "authenticates_with",
+          "source_component": "api",
+          "target_component": "user_pool",
+          "description": "api authenticates_with user_pool"
+        },
+        {
+          "type": "authenticates_with",
+          "source_component": "api",
+          "target_component": "user_pool",
+          "description": "api authenticates_with user_pool"
+        }
+      ]
+    },
+    "S3_to_Glue": {
+      "source_service": "S3",
+      "target_service": "Glue",
+      "relationship_types": [
+        "processed_by"
+      ],
+      "interactions": [
+        {
+          "type": "processed_by",
+          "source_component": "raw_bucket",
+          "target_component": "glue_database",
+          "description": "raw_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "curated_bucket",
+          "target_component": "glue_database",
+          "description": "curated_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "exports_bucket",
+          "target_component": "glue_database",
+          "description": "exports_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "raw_bucket",
+          "target_component": "glue_database",
+          "description": "raw_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "raw_bucket",
+          "target_component": "glue_database",
+          "description": "raw_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "curated_bucket",
+          "target_component": "glue_database",
+          "description": "curated_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "curated_bucket",
+          "target_component": "glue_database",
+          "description": "curated_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "exports_bucket",
+          "target_component": "glue_database",
+          "description": "exports_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "exports_bucket",
+          "target_component": "glue_database",
+          "description": "exports_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "raw_bucket",
+          "target_component": "glue_database",
+          "description": "raw_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "raw_bucket",
+          "target_component": "glue_database",
+          "description": "raw_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "curated_bucket",
+          "target_component": "glue_database",
+          "description": "curated_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "curated_bucket",
+          "target_component": "glue_database",
+          "description": "curated_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "exports_bucket",
+          "target_component": "glue_database",
+          "description": "exports_bucket processed_by glue_database"
+        },
+        {
+          "type": "processed_by",
+          "source_component": "exports_bucket",
+          "target_component": "glue_database",
+          "description": "exports_bucket processed_by glue_database"
+        }
+      ]
+    },
+    "S3_to_Athena": {
+      "source_service": "S3",
+      "target_service": "Athena",
+      "relationship_types": [
+        "queried_by"
+      ],
+      "interactions": [
+        {
+          "type": "queried_by",
+          "source_component": "raw_bucket",
+          "target_component": "athena_workgroup",
+          "description": "raw_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "curated_bucket",
+          "target_component": "athena_workgroup",
+          "description": "curated_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "exports_bucket",
+          "target_component": "athena_workgroup",
+          "description": "exports_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "raw_bucket",
+          "target_component": "athena_workgroup",
+          "description": "raw_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "raw_bucket",
+          "target_component": "athena_workgroup",
+          "description": "raw_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "curated_bucket",
+          "target_component": "athena_workgroup",
+          "description": "curated_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "curated_bucket",
+          "target_component": "athena_workgroup",
+          "description": "curated_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "exports_bucket",
+          "target_component": "athena_workgroup",
+          "description": "exports_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "exports_bucket",
+          "target_component": "athena_workgroup",
+          "description": "exports_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "raw_bucket",
+          "target_component": "athena_workgroup",
+          "description": "raw_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "raw_bucket",
+          "target_component": "athena_workgroup",
+          "description": "raw_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "curated_bucket",
+          "target_component": "athena_workgroup",
+          "description": "curated_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "curated_bucket",
+          "target_component": "athena_workgroup",
+          "description": "curated_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "exports_bucket",
+          "target_component": "athena_workgroup",
+          "description": "exports_bucket queried_by athena_workgroup"
+        },
+        {
+          "type": "queried_by",
+          "source_component": "exports_bucket",
+          "target_component": "athena_workgroup",
+          "description": "exports_bucket queried_by athena_workgroup"
+        }
+      ]
+    }
+  },
+  "security": {
+    "iam_roles": [
+      {
+        "name": "lambda_role",
+        "stack": "ComputeStack",
+        "purpose": "Access control"
+      },
+      {
+        "name": "glue_role",
+        "stack": "DataStack",
+        "purpose": "Access control"
+      },
+      {
+        "name": "authenticated_role",
+        "stack": "ApiStack",
+        "purpose": "Access control"
+      },
+      {
+        "name": "unauthenticated_role",
+        "stack": "ApiStack",
+        "purpose": "Access control"
+      },
+      {
+        "name": "lambda_role",
+        "stack": "ComputeStack",
+        "purpose": "Access control"
+      },
+      {
+        "name": "glue_role",
+        "stack": "DataStack",
+        "purpose": "Access control"
+      },
+      {
+        "name": "authenticated_role",
+        "stack": "ApiStack",
+        "purpose": "Access control"
+      },
+      {
+        "name": "unauthenticated_role",
+        "stack": "ApiStack",
+        "purpose": "Access control"
+      }
+    ],
+    "encryption_enabled": [
+      {
+        "resource": "raw_bucket",
+        "service": "S3",
+        "stack": "DataStack"
+      },
+      {
+        "resource": "curated_bucket",
+        "service": "S3",
+        "stack": "DataStack"
+      },
+      {
+        "resource": "exports_bucket",
+        "service": "S3",
+        "stack": "DataStack"
+      },
+      {
+        "resource": "raw_bucket",
+        "service": "S3",
+        "stack": "DataStack"
+      },
+      {
+        "resource": "curated_bucket",
+        "service": "S3",
+        "stack": "DataStack"
+      },
+      {
+        "resource": "exports_bucket",
+        "service": "S3",
+        "stack": "DataStack"
+      }
+    ],
+    "access_controls": [
+      {
+        "resource": "dlq",
+        "service": "SQS",
+        "permissions": [
+          "grant_send_messages",
+          "grant_consume_messages",
+          "grant_send_messages",
+          "grant_consume_messages"
+        ],
+        "stack": "ComputeStack"
+      },
+      {
+        "resource": "notification_topic",
+        "service": "SNS",
+        "permissions": [
+          "grant_publish",
+          "grant_publish"
+        ],
+        "stack": "ComputeStack"
+      },
+      {
+        "resource": "raw_bucket",
+        "service": "S3",
+        "permissions": [
+          "grant_read_write",
+          "grant_read_write"
+        ],
+        "stack": "DataStack"
+      },
+      {
+        "resource": "curated_bucket",
+        "service": "S3",
+        "permissions": [
+          "grant_read_write",
+          "grant_read_write"
+        ],
+        "stack": "DataStack"
+      }
+    ],
+    "authentication_methods": [
+      {
+        "resource": "user_pool",
+        "type": "UserPool",
+        "stack": "ApiStack"
+      },
+      {
+        "resource": "identity_pool",
+        "type": "CfnIdentityPool",
+        "stack": "ApiStack"
+      },
+      {
+        "resource": "user_pool",
+        "type": "UserPool",
+        "stack": "ApiStack"
+      },
+      {
+        "resource": "identity_pool",
+        "type": "CfnIdentityPool",
+        "stack": "ApiStack"
+      }
+    ]
+  },
+  "data_flow": {
+    "ingestion_sources": [
+      {
+        "name": "ingest_function",
+        "service": "Lambda",
+        "purpose": "Serverless compute",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "ingestion_rule",
+        "service": "EventBridge",
+        "purpose": "Event scheduling",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "ApiStack",
+        "service": "CloudFormation",
+        "purpose": "API and authentication services",
+        "stack": "ApiStack"
+      },
+      {
+        "name": "api",
+        "service": "AppSync",
+        "purpose": "API endpoint",
+        "stack": "ApiStack"
+      },
+      {
+        "name": "ingest_function",
+        "service": "Lambda",
+        "purpose": "Serverless compute",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "ingestion_rule",
+        "service": "EventBridge",
+        "purpose": "Event scheduling",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "ApiStack",
+        "service": "CloudFormation",
+        "purpose": "API and authentication services",
+        "stack": "ApiStack"
+      },
+      {
+        "name": "api",
+        "service": "AppSync",
+        "purpose": "API endpoint",
+        "stack": "ApiStack"
+      }
+    ],
+    "storage_layers": [
+      {
+        "name": "raw_bucket",
+        "service": "S3",
+        "purpose": "Data storage",
+        "stack": "DataStack"
+      },
+      {
+        "name": "curated_bucket",
+        "service": "S3",
+        "purpose": "Data storage",
+        "stack": "DataStack"
+      },
+      {
+        "name": "exports_bucket",
+        "service": "S3",
+        "purpose": "Data storage",
+        "stack": "DataStack"
+      },
+      {
+        "name": "air_quality_table",
+        "service": "DynamoDB",
+        "purpose": "Data storage and retrieval",
+        "stack": "DataStack"
+      },
+      {
+        "name": "raw_bucket",
+        "service": "S3",
+        "purpose": "Data storage",
+        "stack": "DataStack"
+      },
+      {
+        "name": "curated_bucket",
+        "service": "S3",
+        "purpose": "Data storage",
+        "stack": "DataStack"
+      },
+      {
+        "name": "exports_bucket",
+        "service": "S3",
+        "purpose": "Data storage",
+        "stack": "DataStack"
+      },
+      {
+        "name": "air_quality_table",
+        "service": "DynamoDB",
+        "purpose": "Data storage and retrieval",
+        "stack": "DataStack"
+      }
+    ],
+    "processing_components": [
+      {
+        "name": "common_layer",
+        "service": "Lambda",
+        "purpose": "Lambda resource",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "powertools_layer",
+        "service": "Lambda",
+        "purpose": "Lambda resource",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "etl_function",
+        "service": "Lambda",
+        "purpose": "Serverless compute",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "health_check_function",
+        "service": "Lambda",
+        "purpose": "Serverless compute",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "glue_database",
+        "service": "Glue",
+        "purpose": "Glue resource",
+        "stack": "DataStack"
+      },
+      {
+        "name": "common_layer",
+        "service": "Lambda",
+        "purpose": "Lambda resource",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "powertools_layer",
+        "service": "Lambda",
+        "purpose": "Lambda resource",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "etl_function",
+        "service": "Lambda",
+        "purpose": "Serverless compute",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "health_check_function",
+        "service": "Lambda",
+        "purpose": "Serverless compute",
+        "stack": "ComputeStack"
+      },
+      {
+        "name": "glue_database",
+        "service": "Glue",
+        "purpose": "Glue resource",
+        "stack": "DataStack"
+      }
+    ],
+    "api_endpoints": [],
+    "data_transformations": []
+  },
+  "naming_conventions": {
+    "patterns": {
+      "Location Service": [
+        {
+          "name": "air_quality_map",
+          "construct": "CfnMap",
+          "stack": "LocationStack"
+        },
+        {
+          "name": "place_index",
+          "construct": "CfnPlaceIndex",
+          "stack": "LocationStack"
+        },
+        {
+          "name": "air_quality_map",
+          "construct": "CfnMap",
+          "stack": "LocationStack"
+        },
+        {
+          "name": "place_index",
+          "construct": "CfnPlaceIndex",
+          "stack": "LocationStack"
+        }
+      ],
+      "Lambda": [
+        {
+          "name": "common_layer",
+          "construct": "LayerVersion",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "powertools_layer",
+          "construct": "LayerVersion",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "ingest_function",
+          "construct": "Function",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "etl_function",
+          "construct": "Function",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "health_check_function",
+          "construct": "Function",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "common_layer",
+          "construct": "LayerVersion",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "powertools_layer",
+          "construct": "LayerVersion",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "ingest_function",
+          "construct": "Function",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "etl_function",
+          "construct": "Function",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "health_check_function",
+          "construct": "Function",
+          "stack": "ComputeStack"
+        }
+      ],
+      "SQS": [
+        {
+          "name": "dlq",
+          "construct": "Queue",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "dlq",
+          "construct": "Queue",
+          "stack": "ComputeStack"
+        }
+      ],
+      "SNS": [
+        {
+          "name": "notification_topic",
+          "construct": "Topic",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "notification_topic",
+          "construct": "Topic",
+          "stack": "ComputeStack"
+        }
+      ],
+      "IAM": [
+        {
+          "name": "lambda_role",
+          "construct": "Role",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "glue_role",
+          "construct": "Role",
+          "stack": "DataStack"
+        },
+        {
+          "name": "authenticated_role",
+          "construct": "Role",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "unauthenticated_role",
+          "construct": "Role",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "lambda_role",
+          "construct": "Role",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "glue_role",
+          "construct": "Role",
+          "stack": "DataStack"
+        },
+        {
+          "name": "authenticated_role",
+          "construct": "Role",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "unauthenticated_role",
+          "construct": "Role",
+          "stack": "ApiStack"
+        }
+      ],
+      "EventBridge": [
+        {
+          "name": "ingestion_rule",
+          "construct": "Rule",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "health_check_rule",
+          "construct": "Rule",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "ingestion_rule",
+          "construct": "Rule",
+          "stack": "ComputeStack"
+        },
+        {
+          "name": "health_check_rule",
+          "construct": "Rule",
+          "stack": "ComputeStack"
+        }
+      ],
+      "S3": [
+        {
+          "name": "raw_bucket",
+          "construct": "Bucket",
+          "stack": "DataStack"
+        },
+        {
+          "name": "curated_bucket",
+          "construct": "Bucket",
+          "stack": "DataStack"
+        },
+        {
+          "name": "exports_bucket",
+          "construct": "Bucket",
+          "stack": "DataStack"
+        },
+        {
+          "name": "raw_bucket",
+          "construct": "Bucket",
+          "stack": "DataStack"
+        },
+        {
+          "name": "curated_bucket",
+          "construct": "Bucket",
+          "stack": "DataStack"
+        },
+        {
+          "name": "exports_bucket",
+          "construct": "Bucket",
+          "stack": "DataStack"
+        }
+      ],
+      "DynamoDB": [
+        {
+          "name": "air_quality_table",
+          "construct": "Table",
+          "stack": "DataStack"
+        },
+        {
+          "name": "air_quality_table",
+          "construct": "Table",
+          "stack": "DataStack"
+        }
+      ],
+      "Glue": [
+        {
+          "name": "glue_database",
+          "construct": "CfnDatabase",
+          "stack": "DataStack"
+        },
+        {
+          "name": "glue_database",
+          "construct": "CfnDatabase",
+          "stack": "DataStack"
+        }
+      ],
+      "Athena": [
+        {
+          "name": "athena_workgroup",
+          "construct": "CfnWorkGroup",
+          "stack": "DataStack"
+        },
+        {
+          "name": "athena_workgroup",
+          "construct": "CfnWorkGroup",
+          "stack": "DataStack"
+        }
+      ],
+      "Cognito": [
+        {
+          "name": "user_pool",
+          "construct": "UserPool",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "identity_pool",
+          "construct": "CfnIdentityPool",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "user_pool",
+          "construct": "UserPool",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "identity_pool",
+          "construct": "CfnIdentityPool",
+          "stack": "ApiStack"
+        }
+      ],
+      "Unknown": [
+        {
+          "name": "app_client",
+          "construct": "add_client",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "app_client",
+          "construct": "add_client",
+          "stack": "ApiStack"
+        }
+      ],
+      "WAF": [
+        {
+          "name": "web_acl",
+          "construct": "CfnWebACL",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "web_acl",
+          "construct": "CfnWebACL",
+          "stack": "ApiStack"
+        }
+      ],
+      "AppSync": [
+        {
+          "name": "api",
+          "construct": "GraphqlApi",
+          "stack": "ApiStack"
+        },
+        {
+          "name": "api",
+          "construct": "GraphqlApi",
+          "stack": "ApiStack"
+        }
+      ],
+      "Amplify": [
+        {
+          "name": "amplify_app",
+          "construct": "CfnApp",
+          "stack": "FrontendStack"
+        },
+        {
+          "name": "main_branch",
+          "construct": "CfnBranch",
+          "stack": "FrontendStack"
+        },
+        {
+          "name": "amplify_app",
+          "construct": "CfnApp",
+          "stack": "FrontendStack"
+        },
+        {
+          "name": "main_branch",
+          "construct": "CfnBranch",
+          "stack": "FrontendStack"
+        }
+      ]
+    },
+    "prefixes": [
+      "lambda",
+      "web",
+      "glue",
+      "authenticated",
+      "powertools",
+      "health",
+      "etl",
+      "ingest",
+      "curated",
+      "raw",
+      "app",
+      "athena",
+      "amplify",
+      "notification",
+      "main",
+      "air",
+      "identity",
+      "user",
+      "ingestion",
+      "place",
+      "exports",
+      "unauthenticated",
+      "common"
+    ],
+    "suffixes": [
+      "table",
+      "branch",
+      "pool",
+      "layer",
+      "function",
+      "rule",
+      "client",
+      "bucket",
+      "index",
+      "database",
+      "app",
+      "acl",
+      "map",
+      "role",
+      "workgroup",
+      "topic"
+    ],
+    "conventions": [
+      "Resources use descriptive names indicating their purpose",
+      "Stack names follow OpenDataPulse{Purpose}Stack pattern",
+      "S3 buckets include account ID for global uniqueness",
+      "Lambda functions use {Purpose}Function naming pattern",
+      "DynamoDB tables use kebab-case naming"
+    ]
+  }
+}
